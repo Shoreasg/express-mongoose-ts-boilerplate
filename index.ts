@@ -1,15 +1,18 @@
-import express, { Express, Request, Response } from 'express';
+import express, { Express} from 'express';
 import dotenv from 'dotenv';
+import mongoose from 'mongoose';
 
 dotenv.config();
-
 const app: Express = express();
-const port = process.env.PORT;
+const PORT = process.env.PORT||8000;
+const DATABASE=process.env.DATABASE;
+const MONGO_USER=process.env.MONGO_USER;
+const MONGO_PASSWORD=process.env.PASSWORD;
+const MONGO_BASE_URL=process.env.BASE_URL;
+const MONGO_URL=`mongodb+srv://${MONGO_USER}:${MONGO_PASSWORD}@${MONGO_BASE_URL}/${DATABASE}`
 
-app.get('/', (req: Request, res: Response) => {
-  res.send('Express + TypeScript Server');
-});
-
-app.listen(port, () => {
-  console.log(`⚡️[server]: Server is running at http://localhost:${port}`);
-});
+mongoose.set('strictQuery', true);
+mongoose.connect(MONGO_URL).then(()=>{
+  console.log('database connected')
+  app.listen(PORT, () => { console.log('listening on', PORT) });
+})
